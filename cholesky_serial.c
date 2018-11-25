@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     /* close file */
     fclose(file);
 
-    /* display matrix */
+    /* display initial matrix */
     display_matrix(mat, n);
     printf("\n");
 
