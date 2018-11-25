@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 
 double *cholesky(double *A, int n) {
     double *L = (double*)calloc(n * n, sizeof(double));
@@ -27,6 +28,39 @@ void display_matrix(double *A, int n) {
         printf("\n");
     }
 }
+
+double * multiply_matrix_with_transpose(double *l, int n) {
+    int i, j, k;
+    double *result = (double *)calloc(n * n, sizeof(double));
+
+    for(i = 0; i < n; i++)
+        for(j = 0; j < n; j++)
+            for(k = 0; k < n; k++)
+                result[i * n + j] += l[i * n + k] * l[j * n + k];
+
+    return result;
+}
+
+
+bool check_for_correctness(double *a, double *l, int n, double precision) {
+    int i, j, k;
+    bool ok = true;
+    double *result = multiply_matrix_with_transpose(l, n);
+
+    for(i = 0; i < n; i++) {
+        for(j = 0; j < n; j++) {
+            if(abs(a[i*n+j] - result[i*n+j]) > precision){
+                ok = false;
+                break;
+            }
+        }
+    }
+
+    free(result);
+
+    return ok;
+}
+
  
 int main(int argc, char* argv[]) {
     FILE *file;
@@ -68,8 +102,13 @@ int main(int argc, char* argv[]) {
 
     /* display resulting matrix */
     display_matrix(l, n);
-    
-    /* free memory */
+
+    if(check_for_correctness(mat, l, n, 0.0000001))
+        printf("Correct!\n");
+    else
+        printf("Wrong!\n");
+
+     /* free memory */
     free(mat);
     free(l);
  
