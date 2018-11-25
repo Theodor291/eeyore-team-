@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
- 
+
 double *cholesky(double *A, int n) {
     double *L = (double*)calloc(n * n, sizeof(double));
     if (L == NULL)
@@ -20,35 +20,58 @@ double *cholesky(double *A, int n) {
     return L;
 }
  
-void show_matrix(double *A, int n) {
+void display_matrix(double *A, int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++)
-            printf("%2.5f ", A[i * n + j]);
+            printf("%lf ", A[i * n + j]);
         printf("\n");
     }
 }
  
-int main() {
-    int n = 3;
-    FILE *arr;
-    double m1[n][n];
-    arr =fopen("mat.txt","r");
-    int i,j;
+int main(int argc, char* argv[]) {
+    FILE *file;
+    int i, j, n;
+    double *mat;
+
+    if (argc < 2) {
+        fprintf(stderr, "Name of the file needed!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    /* open file */
+    file = fopen(argv[1], "r");
+    if (file == NULL)
+        exit(EXIT_FAILURE);
+
+    /* read matrix dimension from file */
+    fscanf(file, "%d", &n);
+    
+    /* allocate memory for initial matrix */
+    mat = (double *)malloc(n * n * sizeof(double));
      
-     
-    for(i=0 ;i<n; i++)
-    {
-        for(j=0; j<n; j++)
-        {
-            fscanf(arr, "%lf",&m1[i][j]);
-            printf("%f\n", m1[i][j]);
+    /* read matrix from file */
+    for (i = 0; i < n; i++) {
+        for(j = 0; j < n; j++) {
+            fscanf(file, "%lf", &mat[i * n + j]);
         }
     }
-    double *c1 = cholesky(m1, n);
-    show_matrix(c1, n);
+
+    /* close file */
+    fclose(file);
+
+    /* display matrix */
+    display_matrix(mat, n);
     printf("\n");
-    free(c1);
- 
+
+    /* compute cholesky */
+    double *l = cholesky(mat, n);
+
+    /* display resulting matrix */
+    display_matrix(l, n);
+    
+    /* free memory */
+    free(mat);
+    free(l);
  
     return 0;
 }
