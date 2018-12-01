@@ -7,8 +7,8 @@ run_pthreads: pthreads
 run_serial: serial
 	./cholesky_serial mat.txt
 
-openmp: cholesky_openmp.
-	gcc cholesky_openmp.c -fopenmp -o cholesky_pthreads
+openmp: cholesky_openmp.c
+	gcc cholesky_openmp.c -fopenmp -o cholesky_openmp -lm
 
 pthreads: cholesky_pthreads.c
 	gcc cholesky_pthreads.c -pthread -o cholesky_pthreads
