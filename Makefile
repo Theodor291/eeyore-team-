@@ -11,7 +11,7 @@ openmp: cholesky_openmp.
 	gcc cholesky_openmp.c -fopenmp -o cholesky_pthreads
 
 pthreads: cholesky_pthreads.c
-	gcc cholesky_pthreads.c -pthread -o cholesky_pthreads
+	gcc cholesky_pthreads.c -pthread -lm -o cholesky_pthreads
 
 serial: cholesky_serial.c
 	gcc cholesky_serial.c -lm -o cholesky_serial
