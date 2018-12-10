@@ -85,10 +85,6 @@ double * multiply_matrix_with_transpose(double *l, int n) {
         }
     }
 
-    // printf("da\n");
-    // display_matrix(result, n);
-    // printf("\n");
-
     return result;
 }
 
@@ -167,8 +163,6 @@ int main(int argc, char* argv[]) {
 
     /* close file */
     fclose(file);
-	
-	clock_t begin = clock();
 
     for(i = 0; i < THREADS_NUMBER; i++) {
         structs[i].tid = i;
@@ -185,32 +179,14 @@ int main(int argc, char* argv[]) {
     for (i = 0; i < THREADS_NUMBER; i++) {
         pthread_join(threads[i], NULL);
     }
-    clock_t end = clock();
-	double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     
     pthread_barrier_destroy(&barrier);
-    printf("Result!\n");
-    //display_matrix(mat, n);
-
-    // for(i = 0; i < n; i++) {
-    //     for(j = 0;j <= i; j++){
-    //         mat[i * n + j] = mat[j * n + i];
-    //         if(i!=j){
-    //             mat[j*n+i] = 0;
-    //         }
-    //     }
-    // }
-
-    // printf("Results!\n");
-    // display_matrix(mat, n);
-
-    check_for_correctness(mat_copy, mat, n);
+    
+    //check_for_correctness(mat_copy, mat, n);
 
     /* free memory */
     free(mat);
     free(mat_copy);
-
-    printf("Time: %lf\n", time_spent);
     
     return 0;
 }
