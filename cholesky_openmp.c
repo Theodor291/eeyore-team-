@@ -4,9 +4,6 @@
 #include <math.h>
 #include <omp.h>
 
-
-
-
 double *cholesky(double *A, int n) {
     double *L = (double*)calloc(n * n, sizeof(double));
     if (L == NULL)
@@ -65,37 +62,49 @@ void show_matrix(double *A, int n) {
     }
 }
  
-int main() {
-    
-    
-    int n = 1000;
-    double *matrix = (double*)malloc(sizeof(double)*n*n);
-    for(int i=0; i<n; i++) {
-        for(int j=i; j<n; j++) {
-            double element = 1.0*rand();
-            matrix[i*n+j] = element;
-            matrix[j*n+i] = element;
+int main(int argc, char* argv[]) {
 
+    FILE *file;
+    int i, j, n;
+
+    if (argc < 2) {
+        fprintf(stderr, "Name of the file needed!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    /* open file */
+    file = fopen(argv[1],"r");
+    if (file == NULL)
+        exit(EXIT_FAILURE);
+
+    /* read matrix dimension from file */
+    fscanf(file, "%d", &n);
+
+    /* allocate memory for initial matrix */
+    double *matrix = (double*)malloc(sizeof(double)*n*n);
+    double *mat_copy = (double*)malloc(sizeof(double)*n*n);
+    if(matrix == NULL)
+        exit(EXIT_FAILURE);
+
+    /* read matrix from file */
+    for (i = 0; i < n; i++) {
+        for(j = 0; j < n; j++) {
+            double aux;
+            fscanf(file, "%lf", &aux);
+            matrix[i*n+j] = aux;
+            mat_copy[i*n+j] = aux;
         }
     }
+
+    /* close file */
+    fclose(file);
     
-
-    double time;
-    time = omp_get_wtime();
-    double *col = cholesky(matrix, n);
-    time = omp_get_wtime() - time;
-    printf("time %f\n", time);
-
-    time = omp_get_wtime();
     double *col2 = cholesky2(matrix, n);
-    time = omp_get_wtime() - time;
-    printf("time %f\n", time);
 
-    free(col);
+    free(matrix);
+    free(mat_copy);
     free(col2);
-
-    
-    
+  
     return 0;
     
 }
